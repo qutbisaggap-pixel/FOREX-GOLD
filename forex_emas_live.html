@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forex & Emas Live</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0d1b2a;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1b263b;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+        .price-box {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .card {
+            background-color: #1e3d59;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
+        }
+        iframe {
+            border: none;
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <header>📈 Forex & Emas Live | Strategi Scalping & Swing</header>
+
+    <div class="container">
+        <h2>💰 Harga Live</h2>
+        <div class="price-box" id="prices">
+            <div class="card">
+                <h3>Emas (XAU/USD)</h3>
+                <p id="xau">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>EUR/USD</h3>
+                <p id="eurusd">Loading...</p>
+            </div>
+            <div class="card">
+                <h3>GBP/USD</h3>
+                <p id="gbpusd">Loading...</p>
+            </div>
+        </div>
+
+        <h2>📰 Berita Ekonomi & Kalender Rilis</h2>
+        <iframe src="https://sslecal2.investing.com?ecoDayBackground=%231b263b&defaultFont=%23ffffff&borderColor=%231b263b&columns=exc_flags,exc_currency,exc_importance,exc_event,exc_actual,exc_forecast,exc_previous&importanceFilter=0,1,2,3" scrolling="no"></iframe>
+    </div>
+
+    <script>
+        async function fetchPrices() {
+            const API_KEY = "demo"; // Ganti dengan API key gratis dari metalpriceapi.com
+            try {
+                // Ambil harga emas
+                let goldRes = await fetch(`https://api.metalpriceapi.com/v1/latest?api_key=${API_KEY}&base=USD&currencies=XAU`);
+                let goldData = await goldRes.json();
+                document.getElementById("xau").innerText = (1 / goldData.rates.XAU).toFixed(2);
+
+                // Ambil harga forex EUR/USD dan GBP/USD dari exchangerate.host (gratis, tanpa API key)
+                let forexRes = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=EUR,GBP");
+                let forexData = await forexRes.json();
+                document.getElementById("eurusd").innerText = (1 / forexData.rates.EUR).toFixed(5);
+                document.getElementById("gbpusd").innerText = (1 / forexData.rates.GBP).toFixed(5);
+            } catch (error) {
+                console.error("Error fetching prices:", error);
+            }
+        }
+
+        fetchPrices();
+        setInterval(fetchPrices, 60000); // Update tiap 1 menit
+    </script>
+</body>
+</html>
